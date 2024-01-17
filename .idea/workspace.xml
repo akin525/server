@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f564efa-ac81-4c37-9891-4c1c4b09d77b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/models/mcd.model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/view/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/view/save.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/view/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/config/db.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/db.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/listdata.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/listdata.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/verifyelect.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/verifyelect.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/verifytv.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/verifytv.controller.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,14 +12,6 @@
   </component>
   <component name="ComposerSettings">
     <execution />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="HTML File" />
-        <option value="CSS File" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,41 +22,10 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="javascript.nodejs.core.library.configured.version" value="18.17.1" />
-    <property name="javascript.nodejs.core.library.typings.version" value="18.17.1" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/view" />
-    <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\PIPER\server\app\view" />
-      <recent name="C:\Users\PIPER\server\app\models" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="npm.dev" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -84,10 +37,7 @@
       <updated>1703662610492</updated>
       <workItem from="1703662620075" duration="1088000" />
       <workItem from="1703775626319" duration="831000" />
-      <workItem from="1703797536613" duration="2824000" />
-      <workItem from="1703847037831" duration="1049000" />
-      <workItem from="1705392738669" duration="781000" />
-      <workItem from="1705481027390" duration="4687000" />
+      <workItem from="1703797536613" duration="2135000" />
     </task>
     <task id="LOCAL-00001" summary="new domain">
       <created>1703776090305</created>
@@ -103,14 +53,7 @@
       <option name="project" value="LOCAL" />
       <updated>1703836781789</updated>
     </task>
-    <task id="LOCAL-00003" summary="new domain">
-      <created>1703839078799</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1703839078799</updated>
-    </task>
-    <option name="localTasksCounter" value="4" />
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

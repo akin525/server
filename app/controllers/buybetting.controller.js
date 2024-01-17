@@ -1,30 +1,39 @@
 const db = require("../models");
 const User = db.user;
 const bill= db.bill;
-const profit=db.profit;
 const deposit=db.deposit;
-const data=db.data;
 var request = require('request');
 const {response} = require("express");
 const {where} = require("sequelize");
+const { body, validationResult } = require('express-validator');
 const nodemailer = require("nodemailer");
-const gmarket=db.gmarket;
-const gateway=db.gateway;
-exports.buydata =  async (req, res) => {
-    const userid = req.body.userId;
 
+exports.bet =  async (req, res) => {
+    const userid = req.body.userId;
     var boy;
     try {
+        if(req.body.amount===""){
+            return res.status(200).send({status: "0", message: "Kindly enter your amount."});
 
+        }
+        if (req.body.amount <100)
+        {
+            return res.status(200).send({
+                status: "0",
+                message: "Amount must not be lass than 100",
+            });
+        }
         if(req.body.number===""){
-            return res.status(200).send({status: 0, message: "Kindly enter your phone number."});
+            return res.status(200).send({status: "0", message: "Kindly enter your phone number."});
 
         }
-        if(req.body.id===""){
-            return res.status(200).send({status: 0, message: "Kindly select your network."});
+        if(req.body.network===""){
+            return res.status(200).send({status: "0", message: "Kindly select your network."});
 
         }
+
         let authorities = [];
+        var amount=req.body.amount;
 
         const user = await User.findOne({
             where: {
@@ -34,28 +43,11 @@ exports.buydata =  async (req, res) => {
 
         if (!user) {
             // req.session = null;
-            return res.status(200).send({status: 0, message: "Kindly login your account."});
+            return res.status(200).send({status: "0", message: "Kindly login your account."});
         }
-
-        const product= await data.findOne({
-            where:{
-                id:req.body.id,
-            },
-        });
-        if(!product){
-            return res.status(200).send({
-                status:0,
-                message:"product not Found"
-            });
-        }
-        const amount=product.tamount;
-const o=User.wallet < product.tamount;
-        if (parseInt(user.wallet) < parseInt(product.tamount))
-        {
+        if (parseInt(user.wallet) < parseInt(req.body.amount)) {
            return  res.status(200).send({
                 status:"0",
-               mu:o,
-               se:product.tamount,
                balance:user.wallet,
                 message:"insufficient balance"
             });
@@ -80,17 +72,14 @@ const o=User.wallet < product.tamount;
                 message: "invalid transaction"
             });
         }
-
-        const gm= await gateway.findOne({
-            where:{
-                id:1,
-            },
-        });
-
-
-        const gbonus= parseInt(gm.amount) + parseInt(gm.tamount);
+        if (req.body.amount >3000)
+        {
+            return res.status(200).send({
+                status: "0",
+                message: "Amount must be lass than 3000",
+            });
+        }
         var tamount=parseInt(user.wallet) - parseInt(amount);
-        var profits=amount-product.amount;
 
         const user1 = await User.update(
             { wallet: tamount },
@@ -98,56 +87,65 @@ const o=User.wallet < product.tamount;
                 where: {
                     id: userid,
                 },
-
             });
-        console.log("user1");
-        console.log(user1);
 
-        const bil= await bill.create({
+    const bil= await bill.create({
             username:user.username,
-            plan:product.plan,
-            amount:product.tamount,
-            server_res:"data",
+            plan:"Betting--"+req.body.network,
+            amount:req.body.amount,
+            server_res:"airtime",
         result:"0",
         phone:req.body.number,
         refid:req.body.refid,
 
         });
-        const cc=await gmarket.create({
-            product:product.plan,
-            amount:gm.amount,
-        });
-        const pro= await  profit.create({
-            username:user.username,
-            amount:profits,
-            plan:product.plan,
-        });
+        const bo="betting Fund Successfully Delivered To "+req.body.number;
 
-        var options = {
+        // var push={
+        //
+        //     'method': 'POST',
+        //
+        //
+        //     'url': 'https://fcm.googleapis.com/fcm/send',
+        //     'headers': {
+        //         'Authorization': 'Bearer AAAA38EpG3M:APA91bFtHTWf5YVXtGZAEPNdz9uAQfRn8ZjuJftV6FNW6odrslr2pafrJL5Jy5WT-ZlEP_2mwZ5XaxYFZSdtf_-Xa6vPxTzZgoT26JaWvLY0Cjlz1oAJAZf9mg8WTtT7fiwiapoMXTsW',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     formData: {
+        //         "to": "/topics/"+user.username,
+        //         "notification": {
+        //             "body": bo,
+        //             "title": "Airtime Purchase"
+        //
+        //         }
+        //     }
+        // }
+
+        var options =
+            {
             'method': 'POST',
+
+
             'url': 'https://integration.mcd.5starcompany.com.ng/api/reseller/pay',
             'headers': {
                 'Authorization': 'mcd_key_yhij3dui0678iujk23hegwtfyu23dwky'
             },
             formData: {
-                'service': 'data',
-                'coded': product.plan_id,
+                'service': 'betting',
+                'coded': req.body.network,
                 'phone': req.body.number,
-                'reseller_price':product.tamount
+                'amount': req.body.amount
             }
         };
-
         request(options, function (error, response) {
-            if (error) console.log(error);
+            if (error) throw new Error(error);
             var data=JSON.parse(response.body);
-            console.log(data.message);
+            console.log(data.success);
             if (data.success===1){
                 console.log(data);
-
                 const objectToUpdate = {
                     result:1,
                     server_res:response.body
-
                 }
 
                 bill.findAll({ where: { id: bil.id}}).then((result) => {
@@ -158,17 +156,6 @@ const o=User.wallet < product.tamount;
                 })
 
 
-
-                const update={
-                    tamount:gbonus,
-                }
-
-                gateway.findAll({where:{ id:1,}}).then((result)=>{
-                    if (result){
-                        result[0].set(update);
-                        result[0].save();
-                    }
-                })
                 var nodemailer = require('nodemailer');
 
                 var transporter = nodemailer.createTransport({
@@ -191,8 +178,8 @@ const o=User.wallet < product.tamount;
                         '</tr></table><table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%"><tr><td align="center" style="padding:0;Margin:0"><table bgcolor="#ffffff" class="es-content-body" align="center" cellpadding="0" cellspacing="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px"><tr><td align="left" style="padding:20px;Margin:0"><table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td align="center" valign="top" style="padding:0;Margin:0;width:560px"><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td align="center" class="es-m-txt-c" style="padding:0;Margin:0"><h2 style="Margin:0;line-height:31px;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;font-size:26px;font-style:normal;font-weight:bold;color:#333333">Refid&nbsp;<a target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#3d85c6;font-size:26px" href="">' + req.body.refid+'</a>&nbsp;has been recorded!&nbsp;</h2>\n' +
                         '</td></tr><tr><td align="center" style="padding:0;Margin:0;padding-bottom:15px;padding-top:25px"><span class="es-button-border" style="border-style:solid;border-color:#3d85c6;background:#6fa8dc;border-width:2px;display:inline-block;border-radius:6px;width:auto"><a href="" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;border-style:solid;border-color:#6fa8dc;border-width:10px 30px 10px 30px;display:inline-block;background:#6fa8dc;border-radius:6px;font-family:arial, \'helvetica neue\', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;border-left-width:30px;border-right-width:30px">' + user.name+'</a></span></td>\n' +
                         '</tr><tr><td align="center" style="padding:0;Margin:0;padding-bottom:20px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>DATE:&nbsp;</strong>&nbsp;<strong>' + new Date()+'</strong></p></td></tr></table></td></tr></table></td>\n' +
-                        '</tr><tr><td align="left" style="padding:0;Margin:0;padding-top:10px;padding-left:20px;padding-right:20px"><table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td class="es-m-p0r" align="center" style="padding:0;Margin:0;width:560px"><table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;border-top:2px solid #efefef;border-bottom:2px solid #efefef" role="presentation"><tr><td align="left" style="padding:0;Margin:0"><ul><li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Product:' + product.plan+'</strong></p>\n' +
-                        '</li><li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Amount: NGN' + product.tamount+'</strong></p></li>\n' +
+                        '</tr><tr><td align="left" style="padding:0;Margin:0;padding-top:10px;padding-left:20px;padding-right:20px"><table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td class="es-m-p0r" align="center" style="padding:0;Margin:0;width:560px"><table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;border-top:2px solid #efefef;border-bottom:2px solid #efefef" role="presentation"><tr><td align="left" style="padding:0;Margin:0"><ul><li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Product:' + bil.plan+'</strong></p>\n' +
+                        '</li><li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Amount: NGN' + req.body.amount+'</strong></p></li>\n' +
                         '<li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Refid: ' + req.body.refid+'</strong></p></li>\n' +
                         '<li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Phone Number; ' + req.body.number+'</strong></p></li>\n' +
                         '<li style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, \'helvetica neue\', helvetica, sans-serif;line-height:21px;Margin-bottom:15px;margin-left:0;color:#333333;font-size:14px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:\'merriweather sans\', \'helvetica neue\', helvetica, arial, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Balance: NGN' + tamount+'</strong></p></li>\n' +
@@ -216,19 +203,27 @@ const o=User.wallet < product.tamount;
                     status: 1,
                     data:{
                         user:user.username,
-                        message:product.plan+" Was Successfully Delivered To "+req.body.number,
+                        message:"Betting Fund Successfully Delivered To "+req.body.number,
                         server_res:response.body
                     }
 
                 });
             } else if (data.success===0) {
-
+                const back =parseInt(user.wallet) + parseInt(amount);
+                // const user12 =  User.update(
+                //     { wallet: back },
+                //     {
+                //         where: {
+                //             id: userid,
+                //         },
+                //     });
               return   res.status(200).send({
-                    status: 0,
-                    message: data.message
+                    status: "0",
+                    message: data.message,
+                  up:user1
                 });
             }
-            res.status(200).send(response.body);
+            // res.status(200).send(response.body);
 
         });
 

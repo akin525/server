@@ -1,6 +1,7 @@
-
 const db = require("../models");
 const {use} = require("express/lib/router");
+const jwt = require("jsonwebtoken");
+const config = require("../config/auth.config");
 const User = db.user;
 const bill= db.bill;
 const refer= db.refer;
@@ -10,7 +11,7 @@ const noti =db.message;
 const gmarket=db.gmarket;
 const gateway=db.gateway;
 
-exports.dashboard =  async (req, res) => {
+exports.finger =  async (req, res) => {
     const userid = req.userId;
     try {
         let authorities = [];
@@ -58,13 +59,15 @@ exports.dashboard =  async (req, res) => {
                 status:1,
             },
         });
+
         const gm= await gateway.findOne({
             where:{
                 id:1,
             },
         });
-
-
+        const token = jwt.sign({ id: user.id }, config.secret, {
+            expiresIn: 86400, // 24 hours
+        });
 
         return res.status(200).send({
             status:1,
@@ -82,6 +85,7 @@ exports.dashboard =  async (req, res) => {
                 account_name: user.account_name,
                 account_name1: user.account_name1,
                 bank:user.bank,
+                token:token,
                 bank1:user.bank1,
                 noti:notification.message,
                 totalbill:totalbill??0,
@@ -94,7 +98,7 @@ exports.dashboard =  async (req, res) => {
 
         });
     } catch (error) {
-        return res.status(500).send({message: error.message});
+        return res.status(500).send({status:0, message: error.message});
     }
 
     res.status(200).send("User Content.");

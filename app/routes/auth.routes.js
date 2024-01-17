@@ -31,7 +31,12 @@ const googl = require("../controllers/google.controller");
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const paylony=require("../controllers/paylony.controller");
-
+const Pin=require("../controllers/pin.controller");
+const verifyemail=require("../controllers/verifyemail.controller");
+const Fingerprint=require("../controllers/finger.controller");
+const Resend =require("../controllers/getotp.controller");
+const verifybe=require("../controllers/verifybetting.controller");
+const buybet=require("../controllers/buybetting.controller");
 module.exports = function(app) {
   app.use(function(req, res, next) {
     res.header(
@@ -50,11 +55,21 @@ module.exports = function(app) {
     controller.signup
   );
 
+  app.post("/api/auth/verifybetting", verifybe.verifybetting);
+  app.post("/api/auth/buybet", buybet.bet);
   app.post("/api/auth/signin", controller.signin);
+  app.post("/api/auth/verifyemail", verifyemail.verifyemail);
   app.get("/api/auth/dashboard",
       [authJwt.verifyToken],
 
       dashboard.dashboard);
+    app.get("/api/auth/fingerprint",
+        [authJwt.verifyToken],
+
+        Fingerprint.finger);
+  app.post("/api/auth/otp", Resend.otp);
+  app.post("/api/auth/createpin", Pin.createpin);
+  app.post("/api/auth/changepin", Pin.changepin);
   app.get("/listdata", listdata.listdata);
   app.post("/api/auth/airtime", airtime.airtime);
   app.post("/api/auth/buydata", buydata.buydata);
@@ -94,4 +109,5 @@ module.exports = function(app) {
           alldeposit.alldeposit);
 
   app.post("/api/auth/signout", controller.signout);
+  app.post("/api/auth/delete", controller.delete);
 };

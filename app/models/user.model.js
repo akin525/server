@@ -48,7 +48,13 @@ module.exports = (sequelize, Sequelize) => {
     },
     password: {
       type: Sequelize.STRING
-    }
+    },
+    pin:{
+      type: Sequelize.STRING
+    },
+    is_verify:{
+      type:Sequelize.STRING
+    },
   });
 
   return User;
