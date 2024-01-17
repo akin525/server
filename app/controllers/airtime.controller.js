@@ -144,7 +144,7 @@ exports.airtime =  async (req, res) => {
             if (data.success===1){
                 console.log(data);
                 const objectToUpdate = {
-                    result:"1",
+                    result:1,
                     server_res:response.body
                 }
 
@@ -200,7 +200,7 @@ exports.airtime =  async (req, res) => {
 
 
                 return   res.status(200).send({
-                    status: "1",
+                    status: 1,
                     data:{
                         user:user.username,
                         message:"Airtime Successfully Delivered To "+req.body.number,
@@ -210,13 +210,13 @@ exports.airtime =  async (req, res) => {
                 });
             } else if (data.success===0) {
                 const back =parseInt(user.wallet) + parseInt(amount);
-                const user12 =  User.update(
-                    { wallet: back },
-                    {
-                        where: {
-                            id: userid,
-                        },
-                    });
+                // const user12 =  User.update(
+                //     { wallet: back },
+                //     {
+                //         where: {
+                //             id: userid,
+                //         },
+                //     });
               return   res.status(200).send({
                     status: "0",
                     message: data.message,

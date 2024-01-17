@@ -1,3 +1,4 @@
+
 const db = require("../models");
 const {use} = require("express/lib/router");
 const User = db.user;
@@ -6,6 +7,8 @@ const refer= db.refer;
 const deposit=db.deposit;
 const lock =db.safelock;
 const noti =db.message;
+const gmarket=db.gmarket;
+const gateway=db.gateway;
 
 exports.dashboard =  async (req, res) => {
     const userid = req.userId;
@@ -46,22 +49,28 @@ exports.dashboard =  async (req, res) => {
         const referbonus= await refer.sum('amount', {
             where:{
                 username:user.username,
-                status:"1",
+                status:1,
             },
         });
 
         const notification= await noti.findOne({
             where:{
-                status:"1",
+                status:1,
             },
         });
-
+        const gm= await gateway.findOne({
+            where:{
+                id:1,
+            },
+        });
 
 
 
         return res.status(200).send({
             status:1,
             data:{id: user.id,
+                is_verify:user.is_verify,
+                pin:user.pin,
                 name: user.name,
                 username: user.username,
                 email: user.email,
@@ -78,7 +87,8 @@ exports.dashboard =  async (req, res) => {
                 totalbill:totalbill??0,
                 totaldeposit:totaldeposit??0,
                 allock:allock??0,
-                bills:allbill,
+                general_market:parseInt(gm.tamount),
+                // bills:allbill,
                 referbonus:referbonus??0,
                 roles: authorities}
 

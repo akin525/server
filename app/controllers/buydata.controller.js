@@ -8,7 +8,8 @@ var request = require('request');
 const {response} = require("express");
 const {where} = require("sequelize");
 const nodemailer = require("nodemailer");
-
+const gmarket=db.gmarket;
+const gateway=db.gateway;
 exports.buydata =  async (req, res) => {
     const userid = req.body.userId;
 
@@ -16,11 +17,11 @@ exports.buydata =  async (req, res) => {
     try {
 
         if(req.body.number===""){
-            return res.status(200).send({status: "0", message: "Kindly enter your phone number."});
+            return res.status(200).send({status: 0, message: "Kindly enter your phone number."});
 
         }
         if(req.body.id===""){
-            return res.status(200).send({status: "0", message: "Kindly select your network."});
+            return res.status(200).send({status: 0, message: "Kindly select your network."});
 
         }
         let authorities = [];
@@ -33,7 +34,7 @@ exports.buydata =  async (req, res) => {
 
         if (!user) {
             // req.session = null;
-            return res.status(200).send({status: "0", message: "Kindly login your account."});
+            return res.status(200).send({status: 0, message: "Kindly login your account."});
         }
 
         const product= await data.findOne({
@@ -79,6 +80,15 @@ const o=User.wallet < product.tamount;
                 message: "invalid transaction"
             });
         }
+
+        const gm= await gateway.findOne({
+            where:{
+                id:1,
+            },
+        });
+
+
+        const gbonus= parseInt(gm.amount) + parseInt(gm.tamount);
         var tamount=parseInt(user.wallet) - parseInt(amount);
         var profits=amount-product.amount;
 
@@ -103,7 +113,10 @@ const o=User.wallet < product.tamount;
         refid:req.body.refid,
 
         });
-
+        const cc=await gmarket.create({
+            product:product.plan,
+            amount:gm.amount,
+        });
         const pro= await  profit.create({
             username:user.username,
             amount:profits,
@@ -132,7 +145,7 @@ const o=User.wallet < product.tamount;
                 console.log(data);
 
                 const objectToUpdate = {
-                    result:"1",
+                    result:1,
                     server_res:response.body
 
                 }
@@ -145,6 +158,17 @@ const o=User.wallet < product.tamount;
                 })
 
 
+
+                const update={
+                    tamount:gbonus,
+                }
+
+                gateway.findAll({where:{ id:1,}}).then((result)=>{
+                    if (result){
+                        result[0].set(update);
+                        result[0].save();
+                    }
+                })
                 var nodemailer = require('nodemailer');
 
                 var transporter = nodemailer.createTransport({
