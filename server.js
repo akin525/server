@@ -23,6 +23,7 @@ app.use(
 
 // database
 const db = require("./app/models");
+const path = require("path");
 const Role = db.role;
 
 db.sequelize.sync();
@@ -31,12 +32,21 @@ db.sequelize.sync();
 //   console.log('Drop and Resync Database with { force: true }');
 //   initial();
 // });
+app.use(express.static(path.join(__dirname, 'views')));
 
 // simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+// app.get("/", (req, res) => {
+//   res.json({ message: "Savebills Server Running" });
+// });
+// Middleware to set the Content-Type header for style.css
+app.use('/style.css', (req, res, next) => {
+    res.type('text/css');
+    next();
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'app/view', 'index.html'));
+});
 // routes
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
