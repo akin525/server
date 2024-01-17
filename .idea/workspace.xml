@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1f564efa-ac81-4c37-9891-4c1c4b09d77b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/controllers/verifyelect.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/verifyelect.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/verifytv.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/verifytv.controller.js" afterDir="false" />
-    </list>
+    <list default="true" id="1f564efa-ac81-4c37-9891-4c1c4b09d77b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +12,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
   </component>
   <component name="ProjectId" id="2a7GBNbOuPmOXzJZXZXOpEycJ5T" />
   <component name="ProjectViewState">
@@ -58,6 +56,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="new domain" />
