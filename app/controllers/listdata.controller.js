@@ -2,7 +2,6 @@ const db = require("../models");
 const User = db.user;
 const bill= db.bill;
 const data3=db.data;
-const mcd=db.mcd;
 var request = require('request');
 const {response} = require("express");
 const axios = require('axios');
@@ -10,10 +9,14 @@ const axios = require('axios');
 exports.listdata = async (req, res) => {
     try {
         const options = {
-            'method': 'GET',
-            'url': 'https://reseller.mcd.5starcompany.com.ng/api/v1/data/mtn',
-            'headers': {
-                'Authorization': 'Bearer rocqaIlgQZ7S22pno8kiXwgaGsRANJEHD5ai49nX7CrXBfZVS7vvRfCzYmdzZ2GuqmB6JgrUZBmFjwNXUDF9zEV25tWH7ADv7SjcJuOlWypRxpoy28KQU0U2D3XWjKQybBYjNixsMCBv1GJxQPNMcC'
+            method: 'POST',
+            url: 'https://integration.mcd.5starcompany.com.ng/api/reseller/list',
+            headers: {
+                'Authorization': 'mcd_key_yhij3dui0678iujk23hegwtfyu23dwky'
+            },
+            data: {
+                service: 'data',
+                coded:"9"
             }
         };
 
@@ -22,21 +25,20 @@ exports.listdata = async (req, res) => {
 
         const processedData = data.map(process => {
             return {
-                plan_id: process.coded,
-                network: process.network,
+                plan_id: process.code,
+                network: process.type,
                 plan: process.name,
-                category: process.category,
-                code: process.coded,
-                amount: process.price,
-                tamount: process.price,
-                ramount: process.price
+                code: process.code,
+                amount: process.amount,
+                tamount: process.amount,
+                ramount: process.amount
             };
         });
 
         // Assuming 'data3' is a model you want to use for saving data to a database
         // Assuming 'create' is a method to create a new record
         for (const process of processedData) {
-            await mcd.create(process);
+            await data3.create(process);
         }
 
         return res.status(200).json(response.data.data);
